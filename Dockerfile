@@ -1,18 +1,16 @@
-# This file is a template, and might need editing before it works on your project.
-FROM golang:1.8-alpine AS builder
+FROM golang:latest as build-dev
 
-WORKDIR /usr/src/app
+ENV GO111MODULE=on
+ENV BUILDPATH=gitlab.com/solacowa/hello
+#ENV GOPROXY=goproxy.io
+ENV GOPATH=/go
+RUN mkdir -p /go/src/${BUILDPATH}
+COPY ./ /go/src/${BUILDPATH}
+RUN cd /go/src/${BUILDPATH}/cmd/client && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go install -v
+RUN cd /go/src/${BUILDPATH}/cmd/server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go install -v
 
-COPY . .
-RUN go-wrapper download
-RUN go build -v
+FROM alpine:latest
 
-FROM alpine:3.5
-
-# We'll likely need to add SSL root certificates
-RUN apk --no-cache add ca-certificates
-
-WORKDIR /usr/local/bin
-
-COPY --from=builder /usr/src/app/app .
-CMD ["./app"]
+COPY --from=build-env /go/bin/hello /go/bin/hello
+WORKDIR /go/bin/
+CMD ["/go/bin/hello"]
