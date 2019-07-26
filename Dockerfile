@@ -1,4 +1,4 @@
-FROM golang:latest as build-dev
+FROM golang:latest as build-env
 
 ENV GO111MODULE=on
 ENV BUILDPATH=gitlab.com/solacowa/hello
