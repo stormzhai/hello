@@ -1,6 +1,6 @@
 FROM golang:latest as build-env
 
-ENV GO111MODULE=on
+#ENV GO111MODULE=on
 ENV BUILDPATH=github.com/kplcloud/hello
 #ENV GOPROXY=goproxy.io
 ENV GOPATH=/go
